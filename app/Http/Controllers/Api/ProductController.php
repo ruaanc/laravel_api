@@ -22,11 +22,15 @@ class ProductController extends Controller
     }
 
     public function index() {
-        reponse();
-        return $this->product->all();
+        return response()->json($this->product->paginate(10));
     }
 
     public function show(Product $id){
-        return $id;
+        $data = ['data' => $id];
+        return response()->json($data);
+    }
+
+    public function store(Request $request){
+        dd($request->all());
     }
 }
