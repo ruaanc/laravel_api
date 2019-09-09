@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use \App\Product;
+use \App\API\ApiError;
 
 class ProductController extends Controller
 {
@@ -31,6 +32,17 @@ class ProductController extends Controller
     }
 
     public function store(Request $request){
-        dd($request->all());
+
+        try {
+            $productData = $request->all();
+            $this->product->create($productData);
+            return response()->json(['msg' => 'Produto criado com sucesso!'], 201);
+        } catch (\Exception $e) {
+            if(config('app.debug')){
+                return response()->json(ApiError::errorMessage($e->getMessage(), 1010));
+            }
+            return reponse()->json(ApiError::errorMessage('Houve um erro ao realizar operação', 1010));
+        }
+
     }
 }
