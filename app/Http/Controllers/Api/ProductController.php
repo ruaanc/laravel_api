@@ -26,8 +26,13 @@ class ProductController extends Controller
         return response()->json($this->product->paginate(10));
     }
 
-    public function show(Product $id){
-        $data = ['data' => $id];
+    public function show($id){
+
+        $product = $this->product->find($id);
+
+        if(! $product) return response()->json(['data' => ['msg' => 'Produto não encontrado!']], 404);
+        
+        $data = ['data' => $product];
         return response()->json($data);
     }
 
@@ -39,9 +44,9 @@ class ProductController extends Controller
             return response()->json(['msg' => 'Produto criado com sucesso!'], 201);
         } catch (\Exception $e) {
             if(config('app.debug')){
-                return response()->json(ApiError::errorMessage($e->getMessage(), 1010));
+                return response()->json(ApiError::errorMessage($e->getMessage(), 1010), 500);
             }
-            return reponse()->json(ApiError::errorMessage('Houve um erro ao realizar operação', 1010));
+            return reponse()->json(ApiError::errorMessage('Houve um erro ao realizar operação', 1010), 500);
         }
 
     }
@@ -54,9 +59,9 @@ class ProductController extends Controller
             return response()->json(['msg' => 'Produto atualizado com sucesso!'], 201);
         } catch (\Exception $e) {
             if(config('app.debug')){
-                return response()->json(ApiError::errorMessage($e->getMessage(), 1011));
+                return response()->json(ApiError::errorMessage($e->getMessage(), 1011), 500);
             }
-            return reponse()->json(ApiError::errorMessage('Houve um erro ao realizar operação atualizar', 1011));
+            return reponse()->json(ApiError::errorMessage('Houve um erro ao realizar operação atualizar', 1011), 500);
         }
 
     }
@@ -66,9 +71,9 @@ class ProductController extends Controller
             return response()->json(['data' => ['msg' => 'Produto: '. $id->name . ' removido com sucesso!']], 200);
         } catch (\Exception $e) {
             if(config('app.debug')){
-                return response()->json(ApiError::errorMessage($e->getMessage(), 1012));
+                return response()->json(ApiError::errorMessage($e->getMessage(), 1012), 500);
             }
-            return reponse()->json(ApiError::errorMessage('Houve um erro ao realizar operação de remover', 1012));
+            return reponse()->json(ApiError::errorMessage('Houve um erro ao realizar operação de remover', 1012), 500);
         }
     }
 }
